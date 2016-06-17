@@ -1,0 +1,7 @@
+---
+- hosts: mesos_master:mesos_slave
+
+  tasks:
+    - name: Reboot all nodes
+      command: reboot
+

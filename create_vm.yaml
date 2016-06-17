@@ -1,0 +1,54 @@
+---
+- hosts: openstack
+  tasks:
+    - name: start VM
+      os_server:
+        auth:
+          auth_url: http://10.0.159.210:5000/v2.0
+          username: mesos
+          password: P@ssw0rd
+          project_name: Mesos
+        name: "{{item}}"
+        state: present
+        region_name: RegionOne
+        image: Ubuntu 14.04
+        flavor: m1.medium
+        key_name: mesos_key
+        network: net1
+        security_groups: default
+        auto_ip: yes 
+        meta: "hostname={{item}}"
+      with_items:
+        - Master-1
+        - Master-2
+        - Master-3
+        - Slave-1
+        - Slave-2
+      async: 200
+      poll: 0
+    
+    - name: Attach Floating IP if not attached
+      os_floating_ip:
+        auth:
+          auth_url: http://10.0.159.210:5000/v2.0
+          username: mesos
+          password: P@ssw0rd
+          project_name: Mesos
+        server: "{{item}}"
+        state: present        
+        reuse: yes
+      with_items:
+        - Master-1
+        - Master-2
+        - Master-3
+        - Slave-1
+        - Slave-2
+
+#- hosts: localhost
+#  tasks:
+#    - name: Update known_hosts file and accept new fingerprints
+#      shell: ssh-keyscan -H {{item.ipv4.address}} >> ~/.ssh/known_hosts
+#      with_items: play_hosts
+
+ 
+      
