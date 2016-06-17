@@ -17,9 +17,6 @@ echo "" >> /etc/ansible/hosts
 echo "[mesos_slave]" >> /etc/ansible/hosts
 nova --os-project-name=Mesos list | grep Slave | awk '{print $13}' >> /etc/ansible/hosts
 
-#Get all ip-s in one file for future processing
-#nova --os-project-name=Mesos list |  awk '{print $4"=",$13}' > /etc/ansible/mesos/floating.ip
-
 #Clear known_hots file from existing host keys
 #while read line; do
 #    ssh-keygen -f "/root/.ssh/known_hosts" -R $line
@@ -40,6 +37,10 @@ ansible-playbook master_install.yaml
 ansible-playbook slave_install.yaml
 
 mesos_ip=`nova --os-project-name=Mesos list |  grep 'Master-1' | awk '{print $13}'` 
-echo "Now you can connect to Mesos cluster on"
-echo "http://$mesos_ip:5050"
+echo "===================================================="
+echo " Mesos cluster running on:     http://$mesos_ip:5050"
+echo "===================================================="
+echo " Marathon cluster running on:  http://$mesos_ip:8080"
+echo "===================================================="
+ 
 
