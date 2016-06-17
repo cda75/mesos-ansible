@@ -45,10 +45,8 @@
         - mesos-master
         - marathon
 
-    - name: Setting up mesos hostname
-      shell: echo {{ansible_nodename}} > /etc/mesos-master/hostname
-      with_items: '{{play_hosts}}'
-
+    - name: Add hostname to mesos configuration
+      shell: echo {{inventory_hostname}} > /etc/mesos-master/hostname
 
 
 

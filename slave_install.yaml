@@ -16,7 +16,5 @@
     - name: Restart Mesos-slave service
       service: name=mesos-slave state=reloaded
 
-    - name: Setting up mesos hostname
-      shell: /bin/bash source keystone_rc && nova --os-project-name=admin list | grep hostname | awk '{print $13}' > /etc/mesos-slave/hostname
-      with_items: '{{play_hosts}}'
-
+    - name: Add hostname to mesos configuration
+      shell: echo {{inventory_hostname}} > /etc/mesos-slave/hostname
