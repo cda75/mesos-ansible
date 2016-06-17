@@ -1,0 +1,9 @@
+unset OS_SERVICE_TOKEN
+export OS_USERNAME=mesos
+export OS_PASSWORD=P@ssw0rd
+export OS_AUTH_URL=http://10.0.159.210:5000/v2.0
+export PS1='[\u@\h \W(keystone_)]\$ '
+
+export OS_TENANT_NAME=Mesos
+export OS_REGION_NAME=RegionOne
+
