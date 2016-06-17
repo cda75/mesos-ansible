@@ -3,7 +3,7 @@
 export ANSIBLE_HOST_KEY_CHECKING=False
 
 # Creating VM instances
-ansible-playbook /etc/ansible/mesos/create_vm.yaml
+ansible-playbook create_vm.yaml
 
 #Wait for VM running
 echo "Waiting while all node services started"
@@ -18,7 +18,7 @@ echo "[mesos_slave]" >> /etc/ansible/hosts
 nova --os-project-name=Mesos list | grep Slave | awk '{print $13}' >> /etc/ansible/hosts
 
 #Get all ip-s in one file for future processing
-nova --os-project-name=Mesos list |  awk '{print $4"=",$13}' > /etc/ansible/mesos/floating.ip
+#nova --os-project-name=Mesos list |  awk '{print $4"=",$13}' > /etc/ansible/mesos/floating.ip
 
 #Clear known_hots file from existing host keys
 #while read line; do
@@ -27,11 +27,11 @@ nova --os-project-name=Mesos list |  awk '{print $4"=",$13}' > /etc/ansible/meso
 #done < all.ip
 #rm -f all.ip
 
-#Update host files on node VMs
-ansible-playbook update_hosts.yaml
+#Add hosts ip to /etc/hosts file
+ansible-playbook update_hosts_file.yaml
 
 #Deploy common configuration
-ansible-playbook install_common.yaml
+ansible-playbook common_install.yaml
 
 #Deploy Master node software
 ansible-playbook master_install.yaml
@@ -39,5 +39,7 @@ ansible-playbook master_install.yaml
 #Deploy Slave node software
 ansible-playbook slave_install.yaml
 
-
+mesos_ip=`nova --os-project-name=Mesos list |  grep 'Master-1' | awk '{print $13}'` 
+echo "Now you can connect to Mesos cluster on"
+echo "http://$mesos_ip:5050"
 
