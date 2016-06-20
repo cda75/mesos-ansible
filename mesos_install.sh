@@ -18,11 +18,12 @@ echo "[mesos_slave]" >> /etc/ansible/hosts
 nova --os-project-name=Mesos list | grep Slave | awk '{print $13}' >> /etc/ansible/hosts
 
 #Clear known_hots file from existing host keys
-#while read line; do
-#    ssh-keygen -f "/root/.ssh/known_hosts" -R $line
-#    ssh-keyscan -H $line >> ~/.ssh/known_hosts
-#done < all.ip
-#rm -f all.ip
+nova --os-project-name=Mesos list | grep -P '\d' | awk '{print $13}' > all.ip
+while read line; do
+    ssh-keygen -f "/root/.ssh/known_hosts" -R $line
+    ssh-keyscan -H $line >> ~/.ssh/known_hosts
+done < all.ip
+rm -f all.ip
 
 #Add hosts ip to /etc/hosts file
 ansible-playbook update_hosts_file.yaml
@@ -35,6 +36,9 @@ ansible-playbook master_install.yaml
 
 #Deploy Slave node software
 ansible-playbook slave_install.yaml
+
+#Reboot all mesos hosts
+ansible-playbook reboot_all.yaml
 
 mesos_ip=`nova --os-project-name=Mesos list |  grep 'Master-1' | awk '{print $13}'` 
 echo "===================================================="

@@ -1,0 +1,10 @@
+---
+
+clouds:
+  defaults:
+    auth:
+      username: mesos
+      password: P@ssw0rd
+      project_id: 23e5a3187c1a4d13b86f407f3384fb0f
+      auth_url: "http://10.0.159.210:5000/v2.0"
+    region_name: RegionOne

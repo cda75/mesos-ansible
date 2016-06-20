@@ -3,6 +3,7 @@
   tasks:
     - name: start VM
       os_server:
+        cloud: defaults 
         auth:
           auth_url: http://10.0.159.210:5000/v2.0
           username: mesos
@@ -24,11 +25,10 @@
         - Master-3
         - Slave-1
         - Slave-2
-      async: 200
-      poll: 0
     
     - name: Attach Floating IP if not attached
       os_floating_ip:
+        cloud: defaults
         auth:
           auth_url: http://10.0.159.210:5000/v2.0
           username: mesos

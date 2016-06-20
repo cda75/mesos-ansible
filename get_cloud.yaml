@@ -1,0 +1,9 @@
+---
+- hosts: openstack
+  tasks:
+    - name: Get info
+      os_client_config:
+    - debug: var={{ openstack.clouds }}
+       
+ 
+      

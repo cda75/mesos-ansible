@@ -18,3 +18,12 @@
 
     - name: Add hostname to mesos configuration
       shell: echo {{inventory_hostname}} > /etc/mesos-slave/hostname
+
+    - name: Adding Docker support to Mesos configuration
+      shell: sh -c "{{item}}"
+      with_items:
+        - echo 'docker,mesos' > /etc/mesos-slave/containerizers
+        - echo '5mins' > /etc/mesos-slave/executor_registration_timeout
+
+
+
