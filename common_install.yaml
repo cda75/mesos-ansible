@@ -5,6 +5,13 @@
     - name: Update All nodes
       apt: update_cache=yes upgrade=dist
 
+    - name: Updating Nodes /etc/hosts files
+      lineinfile: 
+        dest: /etc/hosts 
+        line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }}" 
+        state: present
+      with_items: "{{play_hosts}}"
+
     - name: Add Mesos Repo Key
       apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=E56151BF
     - name: Add Mesos Repo 

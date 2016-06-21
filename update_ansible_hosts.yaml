@@ -1,0 +1,31 @@
+---
+
+- hosts: localhost
+
+  tasks: 
+    - name: Remove lines from Ansible hosts file
+      blockinfile: 
+        dest: /etc/ansible/hosts 
+        marker: "#{mark} MESOS HOSTS" 
+        content: ""
+        
+
+    - name : Update Ansible hosts file
+      shell: "{{item}}"
+      with_items:
+        - source keystonerc_
+        - echo "#BEGIN MESOS HOSTS"  >> /etc/ansible/hosts
+        - echo "[mesos_master]" >> /etc/ansible/hosts
+        - nova --os-project-name=Mesos list | grep Master | awk '{print $13}' >> /etc/ansible/hosts
+        - echo 
+        - echo "[mesos_slave]" >> /etc/ansible/hosts
+        - nova --os-project-name=Mesos list | grep Slave | awk '{print $13}' >> /etc/ansible/hosts
+        - echo "#END MESOS HOSTS"  >> /etc/ansible/hosts
+      args:
+        executable: /bin/bash
+
+
+
+
+
+
