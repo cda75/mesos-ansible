@@ -47,7 +47,7 @@ ansible-playbook docker_install.yaml
 
 #Reboot all mesos hosts
 ansible-playbook reboot_all.yaml
-
+sleep 10
 mesos_ip=`nova --os-project-name=Mesos list |  grep 'Master' | awk '{print $13}'` 
 echo "===================================================="
 echo " Mesos cluster running on:     http://$mesos_ip:5050"
