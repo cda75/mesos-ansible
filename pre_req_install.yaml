@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Update 
+      apt: name=python-pip state=latest update_cache=yes 
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Update
+      yum: name=python-pip update_cache=yes state=latest
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+    - name: Install Python-Openstack client
+      pip: name=python-openstackclient state=present
+
+
+
+
+
