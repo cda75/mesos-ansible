@@ -1,0 +1,52 @@
+---
+- hosts: mesos_master
+
+  tasks:
+    - name: Add Oracle Repo
+      apt_repository: repo='ppa:webupd8team/java'
+    - name: Accept Oracle Java licence agreement
+      debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+    - name: Install Java8
+      apt: name={{item}} state=present update_cache=yes
+      with_items:
+        - oracle-java8-installer
+        - oracle-java8-set-default
+    - name: Install  Marathon
+      apt: name=marathon state=present update_cache=yes
+
+    - name: Setting up Zookeeper Cluster Node ID
+      shell: echo {{ansible_default_ipv4.address}} | cut -d . -f 4 
+      register: zoo_id
+    - name: Setting Zookeeper myid
+      shell: echo {{ zoo_id.stdout }} > /etc/zookeeper/conf/myid
+    - name: Set fact for myid
+      set_fact:
+        myid: "{{ zoo_id.stdout }}"
+
+    - name: Configuring Zookeeper hosts
+      lineinfile:  dest=/etc/zookeeper/conf/zoo.cfg
+                   line="server.{{ hostvars[item].myid }}={{ hostvars[item].ansible_eth0.ipv4.address }}:2888:3888"
+      with_items: '{{play_hosts}}'
+
+    - name: Restart Zookeeper
+      service: name=zookeeper state=reloaded
+
+    - name: Configure quorum for Zookeeper and disabling Mesos-slave service
+      shell: sh -c "{{item}}"
+      with_items:
+        - echo '2' > /etc/mesos-master/quorum
+        - echo 'manual' > /etc/init/mesos-slave.override
+
+    - name: Stopping Mesos-Slave service
+      service: name=mesos-slave state=stopped 
+    - name: Restart Mesos-master ans Marathon services
+      service: name="{{item}}" state=reloaded
+      with_items:
+        - mesos-master
+        - marathon
+
+    - name: Add hostname to mesos configuration
+      shell: echo {{inventory_hostname}} > /etc/mesos-master/hostname
+
+
+

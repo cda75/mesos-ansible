@@ -1,0 +1,29 @@
+---
+- hosts: mesos_slave
+
+  tasks:
+    - name: Stopping Zookeeper
+      service: name=zookeeper state=stopped
+    
+    - name: Disable Mesos-master and Zookeeper services
+      shell: sh -c "{{item}}"
+      with_items:
+        - echo 'manual' > /etc/init/mesos-master.override
+        - echo 'manual' > /etc/init/zookeeper.override
+   
+    - name: Stopping Mesos-Master service
+      service: name=mesos-master state=stopped 
+    - name: Restart Mesos-slave service
+      service: name=mesos-slave state=reloaded
+
+    - name: Add hostname to mesos configuration
+      shell: echo {{inventory_hostname}} > /etc/mesos-slave/hostname
+
+    - name: Adding Docker support to Mesos configuration
+      shell: sh -c "{{item}}"
+      with_items:
+        - echo 'docker,mesos' > /etc/mesos-slave/containerizers
+        - echo '5mins' > /etc/mesos-slave/executor_registration_timeout
+
+
+

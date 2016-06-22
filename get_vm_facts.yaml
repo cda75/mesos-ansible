@@ -1,0 +1,32 @@
+---
+- hosts: localhost
+
+  tasks:
+#    - name: Update All nodes
+#      apt: update_cache=yes upgrade=dist
+#    - name: Installing Shade and all requirements
+#      apt: name= "{{item}}" state=present update_cache=yes
+#      with_items:
+#        - python-dev
+#        - python-pip
+
+#    - name: Install Pytz 
+#      pip: name=pytz state=present
+#    - name: Install Python module Shade
+#      pip: name=shade state=forcereinstall
+
+    - name: Get VM facts
+      os_server_facts:
+        auth:
+          auth_url: http://10.0.159.210:5000/v2.0
+          username: mesos
+          password: P@ssw0rd
+          project_name: Mesos
+        server: Master-1
+    - debug:
+        var: openstack_servers[0].accessIPv4
+
+
+  
+
+

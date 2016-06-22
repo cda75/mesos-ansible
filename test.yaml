@@ -1,0 +1,7 @@
+---
+- hosts: mesos_master
+
+  tasks:
+    - name: Updating Nodes /etc/hosts file
+      lineinfile: dest=/etc/hosts line="test" state=present
+

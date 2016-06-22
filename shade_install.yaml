@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Installing Python-dev and Python-pip 
+      apt: name= "{{item}}" state=present update_cache=yes
+      with_items:
+        - python-dev
+        - python-pip
+
+    - name: Install Pytz 
+      pip: name=pytz state=present
+
+    - name: Install Shade
+      pip: name=shade state=forcereinstall
+
+
+
+  
+
+
